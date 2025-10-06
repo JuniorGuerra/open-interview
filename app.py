@@ -71,7 +71,7 @@ def visits_api():
 def health():
     try:
         redis.ping()
-        return jsonify({'status': 'healthy'})
+        return jsonify({'status': 'OK!'})
     except:
         return jsonify({'status': 'unhealthy'}), 500
 
