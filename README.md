@@ -27,7 +27,7 @@ En este reto, trabajarás con una aplicación web simple que cuenta visitas usan
   - Mapear puerto 8080
 
 ### 2. Kubernetes
-- [ ] Crear manifiestos en la carpeta `k8s/`
+- [ x ] Crear manifiestos en la carpeta `k8s/`
   - Deployment para la aplicación Flask
   - Deployment para Redis
   - Service para exponer la aplicación
@@ -39,7 +39,7 @@ Puedes elegir:
 - Opción 2: Solo entregar los manifiestos validados
 
 ### 3. Pipeline CI/CD
-- [ ] Crear workflow de GitHub Actions 
+- [ x ] Crear workflow de GitHub Actions 
   - Job 2: Build y Push
     * Login a DockerHub
     * Construir imagen
