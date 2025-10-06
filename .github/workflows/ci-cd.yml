@@ -26,7 +26,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@v5
       with:
-        images: your-dockerhub-username/flask-app
+        images: ${{ secrets.DOCKER_USERNAME }}/flask-app
         tags: |
           type=ref,event=branch
           type=ref,event=pr
