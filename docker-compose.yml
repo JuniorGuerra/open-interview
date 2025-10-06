@@ -1,0 +1,15 @@
+services:
+   redis: 
+     image: redislabs/redismod
+     container_name: redis
+     ports:
+       - '6379:6379' 
+   flask:
+        build: .
+        container_name: flask
+        ports:
+            - "8080:8080"
+        environment:
+            - REDIS_HOST=redis
+        depends_on:
+            - redis
