@@ -71,4 +71,4 @@ Puedes elegir:
 ## Ayuda
 - La aplicación usa el puerto 8080
 - Redis debe ser accesible como 'redis' en la red
-- Usa la variable REDIS_HOST para configurar la conexión
+- Usa la variable REDIS_HOST para configurar la conexión# open-interview
