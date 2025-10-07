@@ -75,6 +75,14 @@ def health():
     except:
         return jsonify({'status': 'unhealthy'}), 500
 
+@app.route('/api/say-hello')
+def say_hello_api():
+    try:
+        redis.ping()
+        return jsonify({'message': 'Hello, World!'}), 200
+    except:
+        return jsonify({'status': 'unhealthy'}), 500
+
 @app.route('/reset', methods=['POST'])
 def reset():
     redis.set('visits', 0)
