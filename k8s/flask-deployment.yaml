@@ -12,24 +12,45 @@ spec:
       labels:
         app: flask-app
     spec:
+      # Esperar a que Redis esté disponible antes de iniciar
+      initContainers:
+      - name: wait-for-redis
+        image: busybox:1.35
+        command: ['sh', '-c', 'until nc -z redis 6379; do echo waiting for redis; sleep 2; done']
       containers:
       - name: flask
         image: juniorguerra/flask-app:dev-d94b276
-        # imagePullPolicy: Never
         ports:
         - containerPort: 8080
         env:
         - name: REDIS_HOST
           value: "redis"
+        - name: REDIS_PORT
+          value: "6379"
+        # Liveness: verifica si el contenedor está vivo (restart si falla)
         livenessProbe:
           httpGet:
             path: /health
             port: 8080
-          initialDelaySeconds: 10
+          initialDelaySeconds: 30  # Aumentado para dar tiempo a iniciar
           periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        # Readiness: verifica si está listo para recibir tráfico
         readinessProbe:
           httpGet:
             path: /health
             port: 8080
-          initialDelaySeconds: 5
-          periodSeconds: 5
+          initialDelaySeconds: 15  # Aumentado
+          periodSeconds: 10  # Menos agresivo
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+        # Recursos para evitar problemas de memoria/CPU
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
