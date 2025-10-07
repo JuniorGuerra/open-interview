@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: flask
-        image: juniorguerra/flask-app:dev-dae6ee2
+        image: juniorguerra/flask-app:dev-d94b276
         # imagePullPolicy: Never
         ports:
         - containerPort: 8080
