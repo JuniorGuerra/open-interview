@@ -19,7 +19,7 @@ spec:
         command: ['sh', '-c', 'until nc -z redis 6379; do echo waiting for redis; sleep 2; done']
       containers:
       - name: flask
-        image: juniorguerra/flask-app:dev-d94b276
+        image: juniorguerra/flask-app:dev-d16ebc0
         ports:
         - containerPort: 8080
         env:
