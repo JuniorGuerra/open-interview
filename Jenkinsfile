@@ -1,5 +1,5 @@
 pipeline {
-    agent none
+    agent any
 
     environment {
         DOCKER_REGISTRY = 'docker.io'
@@ -10,69 +10,50 @@ pipeline {
 
     stages {
         stage('Checkout') {
-            agent any
             steps {
                 echo 'Checking out code from repository...'
                 checkout scm
-                stash includes: '**', name: 'source-code'
             }
         }
 
         stage('Install Dependencies') {
-            agent {
-                dockerContainer {
-                    image 'python:3.11'
-                    reuseNode true
-                }
-            }
             steps {
-                unstash 'source-code'
                 echo 'Installing Python dependencies...'
                 sh '''
-                    pip install --upgrade pip
-                    pip install -r requirements.txt
+                    docker run --rm -v ${WORKSPACE}:/app -w /app python:3.11 sh -c "
+                        pip install --upgrade pip
+                        pip install -r requirements.txt
+                    "
                 '''
             }
         }
 
         stage('Lint & Code Quality') {
-            agent {
-                dockerContainer {
-                    image 'python:3.11'
-                    reuseNode true
-                }
-            }
             steps {
-                unstash 'source-code'
                 echo 'Running code quality checks...'
                 sh '''
-                    pip install flake8
-                    flake8 app.py --max-line-length=120 || true
+                    docker run --rm -v ${WORKSPACE}:/app -w /app python:3.11 sh -c "
+                        pip install flake8
+                        flake8 app.py --max-line-length=120 || true
+                    "
                 '''
             }
         }
 
         stage('Unit Tests') {
-            agent {
-                dockerContainer {
-                    image 'python:3.11'
-                    reuseNode true
-                }
-            }
             steps {
-                unstash 'source-code'
                 echo 'Running unit tests...'
                 sh '''
-                    pip install pytest pytest-cov
-                    pytest --cov=. --cov-report=xml --cov-report=html || true
+                    docker run --rm -v ${WORKSPACE}:/app -w /app python:3.11 sh -c "
+                        pip install pytest pytest-cov
+                        pytest --cov=. --cov-report=xml --cov-report=html || true
+                    "
                 '''
             }
         }
 
         stage('Build Docker Image') {
-            agent any
             steps {
-                unstash 'source-code'
                 echo 'Building Docker image...'
                 script {
                     dockerImage = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
@@ -82,7 +63,6 @@ pipeline {
         }
 
         stage('Security Scan') {
-            agent any
             steps {
                 echo 'Scanning Docker image for vulnerabilities...'
                 sh '''
@@ -94,7 +74,6 @@ pipeline {
         }
 
         stage('Push to Registry') {
-            agent any
             when {
                 branch 'dev'
             }
@@ -110,12 +89,10 @@ pipeline {
         }
 
         stage('Deploy to Production') {
-            agent any
             when {
                 branch 'dev'
             }
             steps {
-                unstash 'source-code'
                 echo 'Deploying to production...'
                 input message: 'Deploy to production?', ok: 'Deploy'
                 script {
@@ -160,7 +137,6 @@ pipeline {
         }
 
         stage('Health Check') {
-            agent any
             steps {
                 echo 'Running health check...'
                 sh '''
