@@ -73,7 +73,7 @@ pipeline {
 
         stage('Push to Registry') {
             when {
-                branch 'main'
+                branch 'dev'
             }
             steps {
                 echo 'Pushing Docker image to registry...'
@@ -88,7 +88,7 @@ pipeline {
 
         stage('Deploy to Production') {
             when {
-                branch 'main'
+                branch 'dev'
             }
             steps {
                 echo 'Deploying to production...'
