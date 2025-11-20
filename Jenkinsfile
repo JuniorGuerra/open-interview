@@ -20,7 +20,7 @@ pipeline {
 
         stage('Install Dependencies') {
             agent {
-                docker {
+                dockerContainer {
                     image 'python:3.11'
                     reuseNode true
                 }
@@ -37,7 +37,7 @@ pipeline {
 
         stage('Lint & Code Quality') {
             agent {
-                docker {
+                dockerContainer {
                     image 'python:3.11'
                     reuseNode true
                 }
@@ -54,7 +54,7 @@ pipeline {
 
         stage('Unit Tests') {
             agent {
-                docker {
+                dockerContainer {
                     image 'python:3.11'
                     reuseNode true
                 }
